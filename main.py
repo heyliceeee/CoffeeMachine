@@ -1,4 +1,4 @@
-from statsforecast.ets import switch
+import sys
 
 MENU = {
     "espresso": {
@@ -50,7 +50,8 @@ match choice:
         print("report")
 
     case "off":
-        print("off")
+        sys.exit()
 
     case _:
-        print("sorry, I don't understand that")
+        print("sorry, I don't understand that. i gonna turn off coffee machine.")
+        sys.exit()
