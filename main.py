@@ -45,27 +45,61 @@ def report():
     print(f"coffee: {currentCoffee}g")
     print(f"money: ${currentMoney}")
 
+# function that check if have resources sufficient
+def check_resources(drink):
+    if drink == "espresso":
+        if currentWater < MENU["espresso"]["ingredients"]["water"]:
+            print("Sorry, you don't have enough water")
+
+        if currentCoffee < MENU["espresso"]["ingredients"]["coffee"]:
+            print("Sorry, you don't have enough coffee")
+
+        else:
+            print("can do the espresso for you!")
+
+
+    elif drink == "latte":
+        if currentWater < MENU["latte"]["ingredients"]["water"]:
+            print("Sorry, you don't have enough water")
+
+        if currentMilk < MENU["latte"]["ingredients"]["milk"]:
+            print("Sorry, you don't have enough milk")
+
+        if currentCoffee < MENU["latte"]["ingredients"]["coffee"]:
+            print("Sorry, you don't have enough coffee")
+
+        else:
+            print("can do the latte for you!")
+
+
+    elif drink == "cappuccino":
+        if currentWater < MENU["cappuccino"]["ingredients"]["water"]:
+            print("Sorry, you don't have enough water")
+
+        if currentMilk < MENU["cappuccino"]["ingredients"]["milk"]:
+            print("Sorry, you don't have enough milk")
+
+        if currentCoffee < MENU["cappuccino"]["ingredients"]["coffee"]:
+            print("Sorry, you don't have enough coffee")
+
+        else:
+            print("can do the cappuccino for you!")
+
 
 # coffee machine menu
 print("welcome to coffee machine! what would you like? (espresso/latte/cappuccino):")
 choice = input()
 
-match choice:
-    case "espresso":
-        print("espresso")
 
-    case "latte":
-        print("latte")
+if choice == "espresso" or choice == "latte" or choice == "cappuccino":
+    check_resources(choice)
 
-    case "cappuccino":
-        print("cappuccino")
+if choice == "report":
+    report()
 
-    case "report":
-        report()
+if choice == "off":
+    sys.exit()
 
-    case "off":
-        sys.exit()
-
-    case _:
-        print("sorry, I don't understand that. i gonna turn off coffee machine.")
-        sys.exit()
+if choice != "espresso" and choice  != "latte" and choice  != "cappuccino" and choice  != "report" and choice  != "off":
+    print("sorry, I don't understand that. i gonna turn off coffee machine.")
+    sys.exit()
