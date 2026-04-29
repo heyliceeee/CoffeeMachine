@@ -45,9 +45,29 @@ def report():
     print(f"coffee: {currentCoffee}g")
     print(f"money: ${currentMoney}")
 
+
+# function that calculate the monetary value of the coins inserted
+def process_coins():
+    print("insert coins: ")
+    print("quarter ($0.25): ")
+    quarter = float(input())
+
+    print("dimes ($0.10): ")
+    dimes = float(input())
+
+    print("nickles ($0.05): ")
+    nickles = float(input())
+
+    print("pennies ($0.01): ")
+    pennies = float(input())
+
+    return (0.25 * quarter) + (0.10 * dimes) + (0.05 * nickles) + (0.01 * pennies)
+
+
 # function that check if have resources sufficient
 def check_resources(drink):
     if drink == "espresso":
+
         if currentWater < MENU["espresso"]["ingredients"]["water"]:
             print("Sorry, you don't have enough water")
 
@@ -55,7 +75,13 @@ def check_resources(drink):
             print("Sorry, you don't have enough coffee")
 
         else:
-            print("can do the espresso for you!")
+            cost = MENU["espresso"]["cost"]
+            print(f"The espresso is ${cost}")
+
+            money_user_put_machine = process_coins()
+            print(f"coins: ${money_user_put_machine}")
+
+            # check_transaction_successfull
 
 
     elif drink == "latte":
@@ -69,7 +95,13 @@ def check_resources(drink):
             print("Sorry, you don't have enough coffee")
 
         else:
-            print("can do the latte for you!")
+            cost = MENU["latte"]["cost"]
+            print(f"The latte is ${cost}")
+
+            money_user_put_machine = process_coins()
+            print(f"coins: ${money_user_put_machine}")
+
+            # check_transaction_successfull
 
 
     elif drink == "cappuccino":
@@ -83,7 +115,13 @@ def check_resources(drink):
             print("Sorry, you don't have enough coffee")
 
         else:
-            print("can do the cappuccino for you!")
+            cost = MENU["cappuccino"]["cost"]
+            print(f"The cappuccino is ${cost}")
+
+            money_user_put_machine = process_coins()
+            print(f"coins: ${money_user_put_machine}")
+
+            # check_transaction_successfull
 
 
 # coffee machine menu
