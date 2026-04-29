@@ -30,7 +30,7 @@ resources = {
     "water": 300,
     "milk": 200,
     "coffee": 100,
-    "money": 10.0
+    "money": 0.0
 }
 
 currentWater = resources["water"]
@@ -61,7 +61,23 @@ def process_coins():
     print("pennies ($0.01): ")
     pennies = float(input())
 
-    return (0.25 * quarter) + (0.10 * dimes) + (0.05 * nickles) + (0.01 * pennies)
+    return float((0.25 * quarter) + (0.10 * dimes) + (0.05 * nickles) + (0.01 * pennies))
+
+
+# function that check if transaction was successful
+def check_transaction_successful(money_user_put_machine, cost):
+    if money_user_put_machine > cost: # if user inserted enough money
+        change = money_user_put_machine - cost # check change need return
+
+        global currentMoney
+        currentMoney = currentMoney + cost # insert the cost in machine
+
+        return print(f"Here is ${change:.2f} dollars in change.")
+
+    if money_user_put_machine < cost:  # if user no inserted enough money
+        return print("Sorry thats not enough money. Money refunded.")
+
+    return print("Sorry thats not enough money. Money refunded.")
 
 
 # function that check if have resources sufficient
@@ -79,9 +95,7 @@ def check_resources(drink):
             print(f"The espresso is ${cost}")
 
             money_user_put_machine = process_coins()
-            print(f"coins: ${money_user_put_machine}")
-
-            # check_transaction_successfull
+            check_transaction_successful(money_user_put_machine, cost)
 
 
     elif drink == "latte":
@@ -99,9 +113,7 @@ def check_resources(drink):
             print(f"The latte is ${cost}")
 
             money_user_put_machine = process_coins()
-            print(f"coins: ${money_user_put_machine}")
-
-            # check_transaction_successfull
+            check_transaction_successful(money_user_put_machine, cost)
 
 
     elif drink == "cappuccino":
@@ -119,9 +131,7 @@ def check_resources(drink):
             print(f"The cappuccino is ${cost}")
 
             money_user_put_machine = process_coins()
-            print(f"coins: ${money_user_put_machine}")
-
-            # check_transaction_successfull
+            check_transaction_successful(money_user_put_machine, cost)
 
 
 # coffee machine menu
