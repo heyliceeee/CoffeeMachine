@@ -30,7 +30,21 @@ resources = {
     "water": 300,
     "milk": 200,
     "coffee": 100,
+    "money": 10.0
 }
+
+currentWater = resources["water"]
+currentMilk = resources["milk"]
+currentCoffee = resources["coffee"]
+currentMoney = resources["money"]
+
+# function that print a report that shows the current resource values
+def report():
+    print(f"water: {currentWater}ml")
+    print(f"milk: {currentMilk}ml")
+    print(f"coffee: {currentCoffee}g")
+    print(f"money: ${currentMoney}")
+
 
 # coffee machine menu
 print("welcome to coffee machine! what would you like? (espresso/latte/cappuccino):")
@@ -47,7 +61,7 @@ match choice:
         print("cappuccino")
 
     case "report":
-        print("report")
+        report()
 
     case "off":
         sys.exit()
