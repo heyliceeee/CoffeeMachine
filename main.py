@@ -33,174 +33,89 @@ resources = {
     "money": 0.0
 }
 
-currentWater = resources["water"]
-currentMilk = resources["milk"]
-currentCoffee = resources["coffee"]
-currentMoney = resources["money"]
-
 # function that print a report that shows the current resource values
 def report():
-    print(f"water: {currentWater}ml")
-    print(f"milk: {currentMilk}ml")
-    print(f"coffee: {currentCoffee}g")
-    print(f"money: ${currentMoney}")
+    print("\n📊 MACHINE REPORT:")
+    for item, amount in resources.items():
+        unit = "ml" if item in ["water", "milk"] else "g" if item == "coffee" else ""
+        emoji = "💧" if item == "water" else "🥛" if item == "milk" else "☕" if item == "coffee" else "💵"
+        print(f"{emoji} {item}: {amount}{unit}")
+    print()
 
 
 # function that calculate the monetary value of the coins inserted
 def process_coins():
-    print("insert coins: ")
-    print("quarter ($0.25): ")
-    quarter = float(input())
+    print("\n💰 Insert coins:")
+    quarter = float(input("🪙 quarters ($0.25): "))
+    dimes = float(input("🪙 dimes ($0.10): "))
+    nickles = float(input("🪙 nickles ($0.05): "))
+    pennies = float(input("🪙 pennies ($0.01): "))
 
-    print("dimes ($0.10): ")
-    dimes = float(input())
-
-    print("nickles ($0.05): ")
-    nickles = float(input())
-
-    print("pennies ($0.01): ")
-    pennies = float(input())
-
-    return float((0.25 * quarter) + (0.10 * dimes) + (0.05 * nickles) + (0.01 * pennies))
+    return (0.25 * quarter) + (0.10 * dimes) + (0.05 * nickles) + (0.01 * pennies)
 
 
-# function that check if transaction was successful
-def check_transaction_successful(money_user_put_machine, cost):
-    if money_user_put_machine > cost: # if user inserted enough money
-        change = money_user_put_machine - cost # check change need return
+# function that check if machine has enough resources
+def has_resources(drink):
+    ingredients = MENU[drink]["ingredients"]
 
-        global currentMoney
-        currentMoney = currentMoney + cost # insert the cost in machine
+    for item, required in ingredients.items():
+        if resources[item] < required:
+            print(f"❌ Sorry, not enough {item}.")
+            return False
 
-        print(f"Here is ${change:.2f} dollars in change.")
-        return True
+    return True
 
-    if money_user_put_machine < cost:  # if user no inserted enough money
-        print("Sorry thats not enough money. Money refunded.")
+
+# function that return true if transaction ok, otherwise false
+def process_transaction(money_inserted, cost):
+    if money_inserted < cost:
+        print("❌ Not enough money. Refunding 💸")
         return False
 
-    print("Sorry thats not enough money. Money refunded.")
-    return False
+    change = money_inserted - cost
+    if change > 0:
+        print(f"💵 Here is your change: ${change:.2f}")
+
+    resources["money"] += cost
+    return True
 
 
-# function that check if have resources sufficient
-def check_resources(drink):
-    global currentWater
-    global currentMilk
-    global currentCoffee
+# function that deduct ingredients and serve drink
+def make_drink(drink):
+    ingredients = MENU[drink]["ingredients"]
+
+    for item, amount in ingredients.items():
+        resources[item] -= amount
+
+    print(f"☕ Here is your {drink}. Enjoy! 😄")
 
 
-    if drink == "espresso":
+def coffee_machine():
+    print("🤖 Welcome to the Coffee Machine!")
 
-        if currentWater < MENU["espresso"]["ingredients"]["water"]:
-            print("Sorry, you don't have enough water")
+    while True:
+        choice = input("\nWhat would you like? (espresso/latte/cappuccino/report/off): ").lower()
 
-        if currentCoffee < MENU["espresso"]["ingredients"]["coffee"]:
-            print("Sorry, you don't have enough coffee")
+        if choice == "off":
+            print("👋 Turning off. See you next time!")
+            sys.exit()
 
-        if currentWater >= MENU["espresso"]["ingredients"]["water"] and currentCoffee >= MENU["espresso"]["ingredients"]["coffee"]:
-            cost = MENU["espresso"]["cost"]
-            print(f"The espresso is ${cost}")
+        elif choice == "report":
+            report()
 
-            money_user_put_machine = process_coins()
-            transaction = check_transaction_successful(money_user_put_machine, cost)
+        elif choice in MENU:
+            if not has_resources(choice):
+                continue
 
-            if transaction is True:
-                # update resources
-                currentWater = currentWater - MENU["espresso"]["ingredients"]["water"]
-                currentCoffee = currentCoffee - MENU["espresso"]["ingredients"]["coffee"]
+            cost = MENU[choice]["cost"]
+            print(f"💲 The {choice} costs ${cost:.2f}")
 
-                print("Here is your espresso. Enjoy!")
+            money = process_coins()
+            if process_transaction(money, cost):
+                make_drink(choice)
 
-                report()  # show
+        else:
+            print("❌ Invalid option. Turning off.")
+            sys.exit()
 
-
-    elif drink == "latte":
-        if currentWater < MENU["latte"]["ingredients"]["water"]:
-            print("Sorry, you don't have enough water")
-
-        if currentMilk < MENU["latte"]["ingredients"]["milk"]:
-            print("Sorry, you don't have enough milk")
-
-        if currentCoffee < MENU["latte"]["ingredients"]["coffee"]:
-            print("Sorry, you don't have enough coffee")
-
-        if currentWater >= MENU["latte"]["ingredients"]["water"] and currentMilk >= MENU["latte"]["ingredients"]["milk"] and currentCoffee >= MENU["latte"]["ingredients"]["coffee"]:
-            cost = MENU["latte"]["cost"]
-            print(f"The latte is ${cost}")
-
-            money_user_put_machine = process_coins()
-            transaction = check_transaction_successful(money_user_put_machine, cost)
-
-            if transaction is True:
-                # update resources
-                currentWater = currentWater - MENU["latte"]["ingredients"]["water"]
-                currentCoffee = currentCoffee - MENU["latte"]["ingredients"]["coffee"]
-                currentMilk = currentMilk - MENU["latte"]["ingredients"]["milk"]
-
-                print("Here is your latte. Enjoy!")
-
-                report()  # show
-
-
-    elif drink == "cappuccino":
-        if currentWater < MENU["cappuccino"]["ingredients"]["water"]:
-            print("Sorry, you don't have enough water")
-
-        if currentMilk < MENU["cappuccino"]["ingredients"]["milk"]:
-            print("Sorry, you don't have enough milk")
-
-        if currentCoffee < MENU["cappuccino"]["ingredients"]["coffee"]:
-            print("Sorry, you don't have enough coffee")
-
-        if currentWater >= MENU["cappuccino"]["ingredients"]["water"] and currentMilk >= MENU["cappuccino"]["ingredients"]["milk"] and currentCoffee >= MENU["cappuccino"]["ingredients"]["coffee"]:
-            cost = MENU["cappuccino"]["cost"]
-            print(f"The cappuccino is ${cost}")
-
-            money_user_put_machine = process_coins()
-            transaction = check_transaction_successful(money_user_put_machine, cost)
-
-            if transaction is True:
-                # update resources
-                currentWater = currentWater - MENU["latte"]["ingredients"]["water"]
-                currentCoffee = currentCoffee - MENU["latte"]["ingredients"]["coffee"]
-                currentMilk = currentMilk - MENU["latte"]["ingredients"]["milk"]
-
-                print("Here is your cappuccino. Enjoy!")
-
-                report()  # show
-
-
-# coffee machine menu
-print("welcome to coffee machine! what would you like? (espresso/latte/cappuccino):")
-choice = input()
-
-if choice == "espresso" or choice == "latte" or choice == "cappuccino":
-    check_resources(choice)
-
-if choice == "report":
-    report()
-
-if choice == "off":
-    sys.exit()
-
-if choice != "espresso" and choice != "latte" and choice != "cappuccino" and choice != "report" and choice != "off":
-    print("sorry, I don't understand that. i gonna turn off coffee machine.")
-    sys.exit()
-
-while choice != "off":
-    print("welcome to coffee machine! what would you like? (espresso/latte/cappuccino):")
-    choice = input()
-
-    if choice == "espresso" or choice == "latte" or choice == "cappuccino":
-        check_resources(choice)
-
-    if choice == "report":
-        report()
-
-    if choice == "off":
-        sys.exit()
-
-    if choice != "espresso" and choice  != "latte" and choice  != "cappuccino" and choice  != "report" and choice  != "off":
-        print("sorry, I don't understand that. i gonna turn off coffee machine.")
-        sys.exit()
+coffee_machine()
